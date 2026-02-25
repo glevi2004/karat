@@ -11,7 +11,7 @@
 
 The proposal in this document is a single-sentence reframe: **turn a 5-minute onboarding into a 1-minute account creation, with a deferred application that works for Karat instead of against it.**
 
-Karat currently bundles two fundamentally different jobs into one monolithic flow:
+Karat currently bundles two fundamentally different jobs into one single flow:
 
 1. **Account creation** — establish identity, claim an account, get a login
 2. **KYB application** — provide the legal and financial data required to open a banking account
@@ -29,7 +29,7 @@ Beyond the UX problems, the email dimension is absent. A user who creates an acc
 
 **The proposal has three components:**
 
-**1 — Account creation in 1 minute.** Name, email, password, company name, business vertical → verify email → you're in. User lands in a demo-mode dashboard immediately. They feel like a customer before the hard part starts.
+**1 — Account creation in under 2 minutes.** Name, company name, work email, mobile number → company website → employee count + business vertical → password → account created. User lands in a demo-mode dashboard immediately. They feel like a customer before the hard part starts.
 
 **2 — Deferred application with pre-filled fields.** EIN, SSN, beneficial ownership, social verification — all in 3–4 focused steps where every field that was collected in account creation is pre-filled. The application is presented as a separate, optional-right-now journey the user returns to from their dashboard.
 
@@ -136,7 +136,7 @@ The onboarding flow has almost no email dimension. This means every user who aba
 **Severity:** High
 **Location:** Post-signup → Step 1
 **Problem:** Karat lets users create an account via email/OAuth on the marketing site, then immediately redirects them to a full business application form. There is no "you created your account" moment. The user feels they are starting, not continuing. The psychological ownership of completion is missing.
-**Fix:** Introduce a two-phase model (see Section 5). Phase 1 = account creation (name, company, email, password). Phase 2 = business setup, triggered as a separate onboarding journey with visible progress from Phase 1.
+**Fix:** Introduce a two-phase model (see Section 6). Phase 1 = account creation (name, company, email, phone, website, employee count, password — four focused screens). Phase 2 = business setup, triggered as a separate onboarding journey with visible progress from Phase 1.
 **Estimated impact:** +10–15% overall completion rate (Brex, Mercury pattern).
 
 ---
@@ -296,9 +296,15 @@ This coupling creates several downstream failures:
 3. **Re-engagement is meaningless.** Even if Karat sends a re-engagement email, clicking it drops the user back into a half-completed KYB form with no context of what they've built or why they should finish.
 4. **Google OAuth users have no password.** A user who signed up via Google OAuth and abandoned is especially likely to lose track — they have no password to remember, no "login with credentials" muscle memory, and nothing anchoring them to the product.
 
-**Fix:** Decouple account creation from the KYB application. Account creation (1 minute: name, email/OAuth, company name, business vertical) completes immediately with email verification and deposits the user in a demo-mode dashboard. The KYB application is a separate journey initiated from the dashboard, with all Phase 1 fields pre-filled. The user has already committed — they have an account, they can see the product, and now they're motivated to unlock the real thing.
+**Fix:** Decouple account creation from the KYB application. Account creation (4 screens: name, company, email, phone → website → employee count + vertical → password) completes immediately and deposits the user in a demo-mode dashboard. The KYB application is a separate journey initiated from the dashboard, with all Phase 1 fields pre-filled. The user has already committed — they have an account, they can see the product, and now they're motivated to unlock the real thing.
 
-**Estimated impact:** +10–20% application start rate from created accounts. The dashboard serves as a product demo that sells the application completion. Users who see the product first are far more likely to complete KYB than users who hit KYB with no prior product exposure.
+**The compounding benefit — connected account automation:** Decoupling doesn't just create a better psychological sequence. It creates a slot between Phase 1 (account creation) and Phase 2 (KYB application) where Karat can offer optional third-party account connections. The user connects their Spotify artist account, their YouTube channel, or their Stripe account — and the KYB application auto-populates from the data in those connections. The user arrives at Phase 2 to find their revenue figures, business description, and platform data already filled in. They review, confirm, and submit rather than type.
+
+This is the same pattern that Mercury uses with Stripe: connect your Stripe account after creating your Mercury account, and Stripe's revenue data pre-fills the business financials section of the banking application. Karat is positioned to go further — creators have platform accounts (Spotify, YouTube, TikTok, Instagram) that contain exactly the data KYB requires: verified identity, revenue signals, audience size, and business activity. These are not supplementary signals. They are the KYB criteria.
+
+The platform verification step currently lives at the end of Phase 2, treated as a final gate. Moving it earlier — as an optional but incentivized step between Phase 1 and Phase 2 — transforms verification from a hurdle into a shortcut. "Connect your YouTube account and we'll fill your application for you" is a very different CTA than "You must connect your account to continue."
+
+**Estimated impact:** +10–20% application start rate from created accounts (decoupling baseline). Connected account pre-fill on top of this is estimated to reduce Phase 2 completion time by 40–60% and increase completion rate by an additional +15–25% — users who see a pre-populated application are dramatically more likely to submit than users facing a blank form.
 
 ---
 
@@ -499,11 +505,12 @@ flowchart TD
 
     subgraph Phase1["PHASE 1 — Account Creation · Light UI · public"]
         direction TB
-        A1["Step A: Identity<br/>Name - Email - Password"]:::p1
-        A2["Email Verification<br/>Click link in inbox"]:::p1
-        A3["Step B: Your Business<br/>Company name - Business structure - Business vertical"]:::p1
-        A4["Account Created<br/>Your Karat account is ready"]:::p1cta
-        A1 --> A2 --> A3 --> A4
+        A1["Step 1: Identity<br/>First name - Last name - Company name - Work email - Mobile"]:::p1
+        A2["Step 2: Company Website<br/>Primary business URL · enables pre-fill in Phase 2"]:::p1
+        A3["Step 3: About Your Team<br/>Employee count - Business vertical"]:::p1
+        A4["Step 4: Secure Your Account<br/>Password · or continue with Google"]:::p1
+        A5["Account Created<br/>Your Karat account is ready"]:::p1cta
+        A1 --> A2 --> A3 --> A4 --> A5
     end
 
     subgraph Phase2["PHASE 2 — Business Verification · Dark UI · Back and Save on every step · authenticated"]
@@ -524,25 +531,25 @@ flowchart TD
     end
 
     Marketing --> A1
-    A4 -->|"Start Verification"| B1
+    A5 -->|"Start Verification"| B1
     B4 --> C1
 ```
 
 ### 6.2 Screen and Click Count Comparison
 
-|                               | Current                            | Proposed Phase 1 (Account Creation) | Proposed Phase 2 (Application) |
-| ----------------------------- | ---------------------------------- | ----------------------------------- | ------------------------------ |
-| Total screens                 | 10 + bug                           | 3                                   | 4                              |
-| Total data fields             | 28                                 | 6                                   | 23 (5 pre-filled, 18 to fill)  |
-| Total actions required        | **37** (+2 bug)                    | **9**                               | **28**                         |
-| Screens with back button      | 0                                  | All                                 | All                            |
-| Third-party branding exposure | 2 screens (Phyllo modal + Twitter) | 0                                   | 0 (popup flow)                 |
-| Redirect bug risk             | High                               | n/a                                 | None (popup flow)              |
-| Visual design languages       | 3                                  | 1 (light)                           | 1 (dark, consistent)           |
-| Distraction screens           | 1 (game)                           | 0                                   | 0                              |
-| First dashboard message       | "Missing information" ⚠️           | Demo mode (immediate)               | "Under review" (neutral)       |
+|                               | Current                            | Proposed Phase 1 (Account Creation) | Proposed Phase 2 (Application)         |
+| ----------------------------- | ---------------------------------- | ----------------------------------- | -------------------------------------- |
+| Total screens                 | 10 + bug                           | 4                                   | 4                                      |
+| Total data fields             | 28                                 | 9                                   | 21 (7 pre-filled from Phase 1, 14 new) |
+| Total actions required        | **37** (+2 bug)                    | **13**                              | **24**                                 |
+| Screens with back button      | 0                                  | All (from step 2 onward)            | All                                    |
+| Third-party branding exposure | 2 screens (Phyllo modal + Twitter) | 0                                   | 0 (popup flow)                         |
+| Redirect bug risk             | High                               | n/a                                 | None (popup flow)                      |
+| Visual design languages       | 3                                  | 1 (light)                           | 1 (dark, consistent)                   |
+| Distraction screens           | 1 (game)                           | 0                                   | 0                                      |
+| First dashboard message       | "Missing information" ⚠️           | Demo mode (immediate)               | "Under review" (neutral)               |
 
-**Total proposed: 9 (Phase 1) + 28 (Phase 2) = 37 actions — same as current, but split across two intentional sessions with immediate value delivery after Phase 1.**
+**Total proposed: 13 (Phase 1) + 24 (Phase 2) = 37 actions — same as current, but split across two intentional sessions with immediate value delivery after Phase 1.**
 
 ---
 
@@ -567,45 +574,115 @@ flowchart TD
 
 ---
 
-#### Proposed Phase 1 — Account Creation (~1 minute): 9 actions
+#### Proposed Phase 1 — Account Creation (~2 minutes): 13 actions
 
-| Step                                                        | Fields       | Button clicks      | Total |
-| ----------------------------------------------------------- | ------------ | ------------------ | ----- |
-| Step A: Name, Email, Password                               | 3            | 1 (Next)           | **4** |
-| Email verification (out-of-app)                             | —            | 1 (link click)     | **1** |
-| Step B: Company name, Business structure, Business vertical | 3            | 1 (Create account) | **4** |
-| **TOTAL**                                                   | **6 fields** | **3**              | **9** |
+| Step                                                            | Fields       | Button clicks | Notes                                                                              | Total  |
+| --------------------------------------------------------------- | ------------ | ------------- | ---------------------------------------------------------------------------------- | ------ |
+| Step 1: First name, Last name, Company name, Work email, Mobile | 5            | 1 (Continue)  | Most recognizable fields first — no EIN, no legal structures                       | **6**  |
+| Step 2: Company website                                         | 1            | 1 (Continue)  | Single focused screen; URL is effortless to type. Powers Phase 2 pre-fill.         | **2**  |
+| Step 3: Employee count + Business vertical                      | 2            | 1 (Continue)  | Radio buttons for employee count; vertical select. Both pre-fill Phase 2 fields.   | **3**  |
+| Step 4: Password (or Google OAuth)                              | 1            | 1 (Submit)    | Account creation moment — password comes last, reducing upfront commitment anxiety | **2**  |
+| **TOTAL**                                                       | **9 fields** | **4**         |                                                                                    | **13** |
 
-User lands in demo-mode dashboard immediately after these 9 actions.
+User lands in demo-mode dashboard immediately after these 13 actions.
+
+**Why company website is collected in Phase 1 (not Phase 2):**
+
+Company website is a uniquely low-friction field — any business with a web presence knows their URL instantly. Collecting it during account creation unlocks two Phase 2 benefits: (1) it enables the system to look up and pre-fill business description and industry before the user even starts their KYB application, reducing the number of fields they type from scratch; (2) it provides a soft eligibility signal — a creator with an established web presence is a stronger KYB candidate and can be routed to a faster review track. The field also replaces the current "Business structure" question in Phase 1, which requires legal knowledge most solo creators don't have memorized (LLC vs. S Corp vs. sole proprietor). That question moves to Phase 2, where it belongs.
 
 ---
 
-#### Proposed Phase 2 — Application (deferred, after pre-fills): 28 actions
+#### Proposed Phase 2 — Application (deferred, after pre-fills): 24 actions
 
-| Step                                | Total fields | Pre-filled from Phase 1             | Fields to fill | Button clicks         | Total actions |
-| ----------------------------------- | ------------ | ----------------------------------- | -------------- | --------------------- | ------------- |
-| Step 1: Business Details + Address  | 14           | 3 (legal name, structure, vertical) | 11             | 1                     | **12**        |
-| Step 2: Ownership + Officer         | 13           | 2 (first name, last name)           | 11             | 1                     | **12**        |
-| Step 3: Social Verification (popup) | 1            | —                                   | 1              | 1 (OAuth Sign In)     | **2**         |
-| Step 4: Review + Submit             | —            | —                                   | —              | 2 (consent + confirm) | **2**         |
-| **TOTAL**                           | **28**       | **5 pre-filled**                    | **23**         | **5**                 | **28**        |
+| Step                                | Total fields | Pre-filled from Phase 1                                   | Fields to fill | Button clicks         | Total actions |
+| ----------------------------------- | ------------ | --------------------------------------------------------- | -------------- | --------------------- | ------------- |
+| Step 1: Business Details + Address  | 14           | 4 (legal name, vertical, employee count, company website) | 10             | 1                     | **11**        |
+| Step 2: Ownership + Officer         | 11           | 3 (first name, last name, phone)                          | 8              | 1                     | **9**         |
+| Step 3: Social Verification (popup) | 1            | —                                                         | 1              | 1 (OAuth Sign In)     | **2**         |
+| Step 4: Review + Submit             | —            | —                                                         | —              | 2 (consent + confirm) | **2**         |
+| **TOTAL**                           | **26**       | **7 pre-filled**                                          | **19**         | **5**                 | **24**        |
 
-#### Actions eliminated in Phase 2 vs. running current flow as-is
+#### Fields eliminated or pre-filled in Phase 2 vs. current flow
 
-| What's eliminated                     | How                                                                        | Actions saved |
-| ------------------------------------- | -------------------------------------------------------------------------- | ------------- |
-| Legal business name                   | Pre-filled from Phase 1 company name                                       | 1             |
-| Business structure                    | Pre-filled from Phase 1 Step B                                             | 1             |
-| Business vertical                     | Pre-filled from Phase 1 Step B                                             | 1             |
-| Legal first name                      | Pre-filled from Phase 1 Step A                                             | 1             |
-| Legal last name                       | Pre-filled from Phase 1 Step A                                             | 1             |
-| MagicSocial consent modal             | Removed entirely (disclosure merged to platform select)                    | 1             |
-| "Add X account" intermediate modal    | Removed via `workPlatformId` pre-selection + popup flow                    | 1             |
-| Business address as a standalone step | Business address merged into Step 1 Business Details (1 fewer Next button) | 1             |
-| Game close modal                      | Replaced with confirmation + quick-start screen                            | 1             |
-| **TOTAL ELIMINATED**                  |                                                                            | **9 actions** |
+| What's pre-filled or eliminated       | Source / How                                                               | Actions saved  |
+| ------------------------------------- | -------------------------------------------------------------------------- | -------------- |
+| Legal business name                   | Pre-filled from Phase 1 Step 1 (company name)                              | 1              |
+| Business vertical                     | Pre-filled from Phase 1 Step 3                                             | 1              |
+| Employee count                        | Pre-filled from Phase 1 Step 3                                             | 1              |
+| Company website                       | Pre-filled from Phase 1 Step 2 (enables AI pre-fill of description)        | 1              |
+| Legal first name                      | Pre-filled from Phase 1 Step 1                                             | 1              |
+| Legal last name                       | Pre-filled from Phase 1 Step 1                                             | 1              |
+| Mobile / phone                        | Pre-filled from Phase 1 Step 1                                             | 1              |
+| MagicSocial consent modal             | Removed entirely (disclosure merged to platform select)                    | 1              |
+| "Add X account" intermediate modal    | Removed via `workPlatformId` pre-selection + popup flow                    | 1              |
+| Business address as a standalone step | Business address merged into Step 1 Business Details (1 fewer Next button) | 1              |
+| Game close modal                      | Replaced with confirmation + quick-start screen                            | 1              |
+| **TOTAL ELIMINATED**                  |                                                                            | **11 actions** |
 
 Without these 9 eliminations, Phase 2 would require 37 actions — identical to the current full flow. The 9 eliminations reduce Phase 2 to 28 actions despite covering the same KYB data.
+
+---
+
+### 6.4 Connected Account Automation — The Compounding Benefit of Decoupling
+
+The structural separation of Phase 1 and Phase 2 is not just a UX improvement. It creates a new surface area that the current monolithic flow cannot support: **a connected accounts step between account creation and the KYB application.**
+
+#### The core mechanic
+
+Once a user has created their account (Phase 1) but before they start their KYB application (Phase 2), Karat can present an optional — but clearly incentivized — screen:
+
+> "Connect your creator accounts and we'll fill your application for you."
+
+The user connects one or more of their existing platform accounts. Karat reads the data. Phase 2 opens pre-populated. The user reviews and confirms rather than types.
+
+This is not a new pattern in fintech. It is the standard approach in the category:
+
+| Company | Connection | What it pre-fills |
+| ------- | ---------- | ------------------ |
+| Mercury | Stripe | Revenue history, transaction volume, business activity |
+| Mercury | Shopify | Business type, revenue, customer volume |
+| Relay | Stripe, QuickBooks | Revenue, expense categories, business financials |
+
+Karat has a uniquely powerful version of this available to it. Karat's users are creators — and creator platforms contain exactly the data KYB requires, already verified, already structured.
+
+#### Karat-specific connection map
+
+| Platform | Data available | Maps to KYB field |
+| -------- | -------------- | ----------------- |
+| **Spotify for Artists** | Monthly listeners, royalty revenue, account verified name, genre | Revenue range, business vertical (Arts), legal/DBA name, business description |
+| **YouTube Studio** | Channel revenue (AdSense), subscriber count, verified channel name, content category | Annual revenue, business vertical, legal/DBA name |
+| **TikTok Creator Marketplace** | Follower count, average views, estimated earnings, profile name | Revenue range, business vertical, business description |
+| **Stripe** | Gross volume, payout history, linked business name, bank account status | Revenue, KYB financial activity, legal business name |
+| **Instagram Professional** | Follower count, content category, verified account info | Business vertical, business description |
+
+In all cases the data returned from these APIs is already verified by the platform. Spotify knows the artist's real name. YouTube knows the channel's revenue. TikTok knows the creator's engagement and income tier. Karat does not have to trust what the user types — it reads from a verified source and asks the user to confirm.
+
+#### What this does to Phase 2
+
+A creator who connects Spotify and Stripe before starting Phase 2 arrives at the KYB application with the following fields already populated:
+
+- Legal/DBA business name (from Spotify artist name or Stripe business name)
+- Business vertical (Arts, Entertainment & Recreation — inferred from platform)
+- Annual revenue range (from Stripe payout volume or platform earnings estimate)
+- Business description (generated from platform data: genre, content category, reach)
+- Employee count (already collected in Phase 1)
+- Company website (already collected in Phase 1)
+
+The remaining fields are personal identity (DOB, SSN, home address) and legal structure — the fields that genuinely require the user's input. Everything else is confirmed, not entered.
+
+#### The CTA framing that makes it work
+
+The current platform verification step is positioned as a requirement: "Connect your social platform so Karat can verify your creator identity." It is a gate.
+
+The connected account step in the proposed flow is positioned as a shortcut: "Connect your accounts and we'll fill your application for you. Takes 30 seconds."
+
+Same technical action. Completely different psychological frame. The user is doing Karat a favor by connecting their accounts in the current flow. In the proposed flow, Karat is doing the user a favor.
+
+#### Implementation path
+
+This feature is only possible after decoupling. In the current monolithic flow, there is no moment between account creation and KYB where this connection can naturally live. The decoupled architecture creates that moment. The connections feature is therefore a direct downstream benefit of the Phase 1 / Phase 2 split — not a separate initiative.
+
+**Phase 3 roadmap placement:** Connected account pre-fill is a Phase 3 initiative (after Phase 1 and Phase 2 are shipped). It requires OAuth integrations with creator platforms and a data mapping layer to populate KYB fields from API responses. The groundwork (platform connection UI, Phyllo popup flow) is already being laid in Phase 2.
 
 ---
 
@@ -626,10 +703,13 @@ All estimates based on industry benchmarks for B2B fintech onboarding (Mercury, 
 | Remove game, add activation content                                   | FP-9           | +20–30% first-session activation      |
 | Fix first dashboard message                                           | FP-10          | -15–20% immediate post-onboard churn  |
 | Unified loading component — persistent chrome during step transitions | FP-11          | -20–30% perceived onboarding duration |
+| Connected account pre-fill (Spotify, YouTube, Stripe, TikTok)        | FP-13 / §6.4   | +15–25% Phase 2 completion; -40–60% time to submit |
 
 **Conservative combined estimate:** If each improvement captures the low end of its range independently, the cumulative effect on end-to-end onboarding completion is **+22–38% absolute**, with first-session activation improving by **+20–30%**.
 
 The highest-value single fix: **the Phyllo popup flow switch (FP-6)** — it's a bug fix with no UX tradeoffs that recovers a significant drop-off cliff.
+
+The highest-value strategic unlock: **connected account pre-fill (§6.4)** — only possible after Phase 1 / Phase 2 decoupling, but converts the platform verification step from a compliance gate into a user-facing shortcut that fills the application for them.
 
 ---
 
