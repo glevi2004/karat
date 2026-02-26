@@ -23,11 +23,11 @@ We are currently focused on the **acquisition** and **onboarding** phases of Kar
 
 See the [Audits Index](audits/README.md) for the full consolidated view — all findings by severity, cross-audit priority PRs, and next steps.
 
-| Audit | Findings | Score | Highest Priority |
-| ----- | -------- | ----- | ---------------- |
-| [Website & Landing Pages](audits/website.md) | 9 issues (WEB-1–9) | 2.5/5 | Card page auto-redirect (Critical) |
-| [SEO & Content Strategy](audits/seo_and_content.md) | 6 issues (SEO-1–6) | 2/5 | No ranking for core product queries (High) |
-| [Onboarding Flow](audits/onboarding.md) | 13 friction points (ONB-1–13) | 2/5 | Phyllo redirect bug (Critical) |
+| Audit                                               | Findings                      | Score | Highest Priority                           |
+| --------------------------------------------------- | ----------------------------- | ----- | ------------------------------------------ |
+| [Website & Landing Pages](audits/website.md)        | 9 issues (WEB-1–9)            | 2.5/5 | Card page auto-redirect (Critical)         |
+| [SEO & Content Strategy](audits/seo_and_content.md) | 6 issues (SEO-1–6)            | 2/5   | No ranking for core product queries (High) |
+| [Onboarding Flow](audits/onboarding.md)             | 13 friction points (ONB-1–13) | 2/5   | Phyllo redirect bug (Critical)             |
 
 **28 total findings** across 3 audits, with **2 Critical**, **10 High**, and **16 Medium/Low** items. Each audit includes a phased PR roadmap.
 
@@ -48,10 +48,10 @@ See the [my-app README](my-app/README.md) for the full feature list, architectur
 
 ### What's next (to be implemented)
 
-| Area | Scope | Status |
-| ---- | ----- | ------ |
-| GEO (AI/LLM visibility) | Test whether Karat is cited by ChatGPT, Perplexity, Google AI Overviews, Claude for creator finance queries | 🔲 Not started |
-| Partnerships & distribution | Assess whether Visa, Spotify, CAA partnerships are driving measurable growth | 🔲 Not started |
+| Area                           | Scope                                                                                                                            | Status         |
+| ------------------------------ | -------------------------------------------------------------------------------------------------------------------------------- | -------------- |
+| GEO (AI/LLM visibility)        | Test whether Karat is cited by ChatGPT, Perplexity, Google AI Overviews, Claude for creator finance queries                      | 🔲 Not started |
+| Partnerships & distribution    | Assess whether Visa, Spotify, CAA partnerships are driving measurable growth                                                     | 🔲 Not started |
 | Retention & product stickiness | Product stickiness (bookkeeping, tax tools, invoicing), lifecycle marketing, community (Creator Studio), cross-sell, churn risks | 🔲 Not started |
 
 ---
@@ -129,11 +129,11 @@ Several audit documents include Mermaid diagrams (flow charts, architecture diag
 
 ```
 karat/
-├── README.md                      ← You are here
+├── README.md              ← You are here
 ├── audits/
-│   ├── README.md                  ← Consolidated findings index, cross-audit priority PRs
-│   ├── website.md                 ← Website & landing pages (9 issues, WEB-1–9)
-│   ├── seo_and_content.md         ← SEO & content strategy (6 issues, SEO-1–6)
-│   └── onboarding.md              ← Onboarding flow (13 friction points, ONB-1–13)
-└── my-app/                        ← Onboarding UI prototype (Next.js 16, shadcn/ui, AI chat)
+│   ├── README.md          ← Consolidated findings index
+│   ├── onboarding.md      ← Onboarding flow (main deliverable)
+│   ├── website.md         ← Website & landing pages
+│   └── seo_and_content.md ← SEO & content strategy
+└── my-app/                ← Onboarding UI prototype
 ```
