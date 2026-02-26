@@ -1,0 +1,64 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // ── Signup fields ──────────────────────────────────
+  firstName      String
+  lastName       String
+  companyName    String
+  email          String  @unique
+  phone          String  @default("")
+  companyWebsite String  @default("")
+  vertical       String  @default("")
+  employees      String  @default("")
+  password       String
+
+  // ── Onboarding: Business info (step 1) ─────────────
+  structure          String @default("")
+  legalName          String @default("")
+  hasDBA             String @default("no")
+  ein                String @default("")
+  incorporationDate  String @default("")
+  incorporationState String @default("")
+  hasOtherOwners     String @default("no")
+  revenue            String @default("")
+
+  // ── Onboarding: Personal info (step 2) ─────────────
+  isOwner       String @default("yes")
+  dob           String @default("")
+  hasSSN        String @default("yes")
+  streetAddress String @default("")
+  aptSuite      String @default("")
+  city          String @default("")
+  state         String @default("")
+  zipCode       String @default("")
+  country       String @default("US")
+
+  // ── Onboarding: Company officer (step 3) ───────────
+  officerName  String @default("")
+  officerTitle String @default("")
+
+  // ── Onboarding: Business address (step 4) ──────────
+  businessStreetAddress String @default("")
+  businessAptSuite      String @default("")
+  businessCity          String @default("")
+  businessState         String @default("")
+  businessZipCode       String @default("")
+  businessCountry       String @default("US")
+
+  // ── Onboarding: Platform (step 5) ─────────────────
+  socialPlatform String @default("")
+
+  // ── Status ─────────────────────────────────────────
+  onboardingCompleted Boolean @default(false)
+}

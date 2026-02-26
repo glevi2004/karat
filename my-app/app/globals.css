@@ -1,0 +1,200 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/* ── Google Places Autocomplete dropdown — dark theme ── */
+.pac-container {
+  background-color: #27272a;
+  border: 1px solid #3f3f46;
+  border-radius: 8px;
+  margin-top: 4px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+  font-family: inherit;
+}
+.pac-item {
+  padding: 10px 14px;
+  color: #d4d4d8;
+  cursor: pointer;
+  border-top: 1px solid #3f3f46;
+  font-size: 13px;
+  line-height: 1.4;
+}
+.pac-item:first-child {
+  border-top: none;
+}
+.pac-item:hover,
+.pac-item-selected {
+  background-color: rgba(109, 93, 252, 0.15);
+}
+.pac-item-query {
+  color: #ffffff;
+  font-size: 13px;
+}
+.pac-matched {
+  color: #a89ffe;
+  font-weight: 600;
+}
+.pac-icon {
+  display: none;
+}
+.pac-logo::after {
+  display: none;
+}
+
+:root {
+  --background: 0 0% 96%;
+  --foreground: 0 0% 0%;
+  --card: 0 0% 100%;
+  --card-foreground: 0 0% 0%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 0 0% 0%;
+  --primary: 246 100% 67%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 240 5% 96%;
+  --secondary-foreground: 0 0% 0%;
+  --muted: 240 5% 96%;
+  --muted-foreground: 0 0% 40%;
+  --accent: 240 5% 96%;
+  --accent-foreground: 0 0% 0%;
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 0 0% 100%;
+  --border: 240 6% 90%;
+  --input: 240 6% 90%;
+  --ring: 246 100% 67%;
+  --radius: 0.5rem;
+  
+  /* Sidebar variables */
+  --sidebar: 0 0% 98%;
+  --sidebar-foreground: 240 5.3% 26.1%;
+  --sidebar-background: 0 0% 98%;
+  --sidebar-accent: 240 4.8% 95.9%;
+  --sidebar-accent-foreground: 240 5.9% 10%;
+  --sidebar-border: 220 13% 91%;
+  --sidebar-ring: 217.2 91.2% 59.8%;
+}
+
+@theme inline {
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  
+  /* Sidebar colors */
+  --color-sidebar: hsl(var(--sidebar));
+  --color-sidebar-foreground: hsl(var(--sidebar-foreground));
+  --color-sidebar-background: hsl(var(--sidebar-background));
+  --color-sidebar-accent: hsl(var(--sidebar-accent));
+  --color-sidebar-accent-foreground: hsl(var(--sidebar-accent-foreground));
+  --color-sidebar-border: hsl(var(--sidebar-border));
+  --color-sidebar-ring: hsl(var(--sidebar-ring));
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+/* Karat specific styles */
+.karat-gradient {
+  background: linear-gradient(180deg, #f3f4f6 0%, #e5e7eb 50%, #f3f4f6 100%);
+}
+
+.karat-purple {
+  color: #6d5dfc;
+}
+
+.karat-purple-bg {
+  background-color: #6d5dfc;
+}
+
+.karat-hero-text {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Avatar stack */
+.avatar-stack {
+  display: flex;
+}
+
+.avatar-stack > * {
+  margin-left: -8px;
+  border: 2px solid white;
+}
+
+.avatar-stack > *:first-child {
+  margin-left: 0;
+}
+
+/* Switch & Checkbox — plain CSS to avoid Tailwind data-attribute selector bug */
+.switch-root[data-state="checked"] {
+  background-color: hsl(var(--primary));
+}
+.switch-root[data-state="unchecked"] {
+  background-color: hsl(var(--input));
+}
+.switch-thumb[data-state="checked"] {
+  transform: translateX(1rem);
+}
+.switch-thumb[data-state="unchecked"] {
+  transform: translateX(0);
+}
+.checkbox-root[data-state="checked"] {
+  background-color: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+  border-color: hsl(var(--primary));
+}
+.switch-demo[data-state="checked"] {
+  background-color: #9333ea;
+}
+.checkbox-karat[data-state="checked"] {
+  background-color: #6d5dfc;
+  border-color: #6d5dfc;
+}
+
+/* Sidebar styles */
+[data-sidebar="sidebar"] {
+  background-color: hsl(var(--sidebar-background));
+  color: hsl(var(--sidebar-foreground));
+}
+
+[data-sidebar="menu-button"] {
+  color: hsl(var(--sidebar-foreground));
+}
+
+[data-sidebar="menu-button"]:hover,
+[data-sidebar="menu-button"][data-active="true"] {
+  background-color: hsl(var(--sidebar-accent));
+  color: hsl(var(--sidebar-accent-foreground));
+}

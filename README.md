@@ -1,5 +1,7 @@
 # Karat Financial — Growth Analysis
 
+> **Reference board:** [Karat Growth Audit — Visual Map](https://app.excalidraw.com/s/9QvXbs54mAb/7sPMMJ164Pe)
+
 ## Goal
 
 1. **Map Karat's customer lifecycle** from discovery → evaluation → signup → activation → retention
@@ -11,22 +13,65 @@
 
 This is a **from-the-outside analysis** — we're working with what's publicly observable: the website, content, search presence, AI visibility, and product experience. We don't have access to internal analytics, ad platforms, or conversion data.
 
-## 1. Customer Lifecycle
+---
 
-We will base the analysis around three stages of the customer journey:
+## Current Focus: Acquisition & Onboarding
+
+We are currently focused on the **acquisition** and **onboarding** phases of Karat's customer lifecycle. These two phases are tightly coupled — a creator who can't find Karat or who drops off during signup is a lost conversion regardless of how good the product is.
+
+### Completed audits
+
+See the [Audits Index](audits/README.md) for the full consolidated view — all findings by severity, cross-audit priority PRs, and next steps.
+
+| Audit | Findings | Score | Highest Priority |
+| ----- | -------- | ----- | ---------------- |
+| [Website & Landing Pages](audits/website.md) | 9 issues (WEB-1–9) | 2.5/5 | Card page auto-redirect (Critical) |
+| [SEO & Content Strategy](audits/seo_and_content.md) | 6 issues (SEO-1–6) | 2/5 | No ranking for core product queries (High) |
+| [Onboarding Flow](audits/onboarding.md) | 13 friction points (ONB-1–13) | 2/5 | Phyllo redirect bug (Critical) |
+
+**28 total findings** across 3 audits, with **2 Critical**, **10 High**, and **16 Medium/Low** items. Each audit includes a phased PR roadmap.
+
+### UI Prototype
+
+The [Onboarding Prototype](my-app/) is a playground for exploring what the proposed two-phase signup could look like in practice. It implements the core idea from the onboarding audit: **decouple account creation from the KYB application** so users get an account in under 2 minutes and complete verification at their own pace.
+
+It is not architecturally built for production or scale — it's a UI exploration. Key things it demonstrates:
+
+- **Two-phase flow** — 4-step signup (account creation) → 6-step onboarding (KYB application)
+- **Back navigation on every step** (ONB-1)
+- **AI assistant** available throughout onboarding and dashboard (streaming, resizable sidebar)
+- **Redesigned Phyllo flow** — modal-based instead of redirect (ONB-5, ONB-6, ONB-7)
+- **Google Places autocomplete** for address steps
+- **Dashboard** with banking overview, AI bookkeeping, and application status
+
+See the [my-app README](my-app/README.md) for the full feature list, architecture diagram, and mapping to audit findings.
+
+### What's next (to be implemented)
+
+| Area | Scope | Status |
+| ---- | ----- | ------ |
+| GEO (AI/LLM visibility) | Test whether Karat is cited by ChatGPT, Perplexity, Google AI Overviews, Claude for creator finance queries | 🔲 Not started |
+| Partnerships & distribution | Assess whether Visa, Spotify, CAA partnerships are driving measurable growth | 🔲 Not started |
+| Retention & product stickiness | Product stickiness (bookkeeping, tax tools, invoicing), lifecycle marketing, community (Creator Studio), cross-sell, churn risks | 🔲 Not started |
+
+---
+
+## Customer Lifecycle
+
+The analysis is structured around three stages of the customer journey:
 
 ### 1. Acquisition — How do creators discover and evaluate Karat?
 
 - Website & landing pages
 - SEO & content strategy
-- GEO (AI/LLM visibility), and partnerships.
+- GEO (AI/LLM visibility) and partnerships
 
 This is where a creator goes from "never heard of Karat" to "I'm going to sign up."
 
 ### 2. Onboarding — What happens between "Sign Up" and active usage?
 
 - The signup flow + approval/waiting state
-- First dashboard experience, and the path to first value.
+- First dashboard experience and the path to first value
 
 This is tightly coupled with acquisition — a bad onboarding experience is an acquisition failure.
 
@@ -36,7 +81,7 @@ This is tightly coupled with acquisition — a bad onboarding experience is an a
 - Lifecycle marketing (email, push)
 - Community (Creator Studio)
 - Cross-sell between card and banking
-- Churn risks.
+- Churn risks
 
 ---
 
@@ -50,17 +95,6 @@ These themes apply to every stage of the lifecycle and are evaluated throughout 
 - **Mobile experience** — Creator audiences skew mobile-heavy; Karat is iOS-only. How does every touchpoint perform on mobile?
 
 ---
-
-## What We're Focusing On
-
-| Area                           | Why                                                                                | Status         |
-| ------------------------------ | ---------------------------------------------------------------------------------- | -------------- |
-| Website & landing pages        | Primary conversion surface — where most creators form their first impression       | ✅ Complete    |
-| SEO & content strategy         | Biggest long-term organic growth lever, currently underutilized                    | ✅ Complete    |
-| GEO (AI/LLM visibility)        | Emerging channel — creators increasingly ask AI for financial tool recommendations | 🔲 Not started |
-| Partnerships & distribution    | Karat has major partners (Visa, Spotify, CAA) — are they driving growth?           | 🔲 Not started |
-| Onboarding flow                | The signup-to-active-user journey, including Phyllo integration                    | 🔲 Not started |
-| Retention & product stickiness | What keeps creators engaged after activation                                       | 🔲 Not started |
 
 ## What We're NOT Focusing On
 
@@ -79,27 +113,27 @@ We'll note these as gaps and flag recommendations where relevant, but won't pret
 
 ---
 
+## Tooling
+
+This analysis was powered by **Claude Code**, **Codex**, and **Kimi 2.5**, along with Claude Code's Excalidraw MCP skill for generating the diagrams embedded in the documentation and on the [Excalidraw reference board](https://app.excalidraw.com/s/9QvXbs54mAb/7sPMMJ164Pe).
+
+Several audit documents include Mermaid diagrams (flow charts, architecture diagrams). To view them rendered:
+
+- **Cursor / VS Code** — install the [Markdown Preview Mermaid Support](https://marketplace.visualstudio.com/items?itemName=bierner.markdown-mermaid) extension, then open any `.md` file and use `Cmd+Shift+V` (or `Ctrl+Shift+V`) to open the Markdown preview.
+- **GitHub** — Mermaid diagrams render natively in `.md` files.
+- **Other editors** — look for a Mermaid plugin for your Markdown previewer.
+
+---
+
 ## File Structure
 
 ```
-karat-growth-audit/
-├── README.md                  ← You are here
-├── 00_company_context.md      ← What Karat is, product suite, funding, market position
+karat/
+├── README.md                      ← You are here
 ├── audits/
-│   ├── website.md             ← Website & landing page teardown (9 issues found)
-│   ├── seo_and_content.md     ← SEO keyword gaps, content strategy
-│   ├── geo.md                 ← AI/LLM visibility testing
-│   ├── partnerships.md        ← Partner channel assessment
-│   ├── onboarding.md          ← Signup flow & first-run experience
-│   └── retention.md           ← Product stickiness & churn risks
-├── tasks/
-│   ├── p0_critical.md         ← Fix now — actively breaking conversion
-│   ├── p1_high_impact.md      ← Fix this week — high-leverage improvements
-│   ├── p2_strategic.md        ← Fix this month — content, positioning, new channels
-│   └── backlog.md             ← Track later
-└── reference/
-    ├── navigation_audit.md    ← Full nav link matrix
-    ├── deprecated_pages.md    ← Inventory of stale URLs still live
-    └── competitor_matrix.md   ← Positioning vs Found, Mercury, etc.
+│   ├── README.md                  ← Consolidated findings index, cross-audit priority PRs
+│   ├── website.md                 ← Website & landing pages (9 issues, WEB-1–9)
+│   ├── seo_and_content.md         ← SEO & content strategy (6 issues, SEO-1–6)
+│   └── onboarding.md              ← Onboarding flow (13 friction points, ONB-1–13)
+└── my-app/                        ← Onboarding UI prototype (Next.js 16, shadcn/ui, AI chat)
 ```
-# karat

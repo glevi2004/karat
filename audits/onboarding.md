@@ -1,31 +1,26 @@
-# Karat Onboarding Audit
+# Audit: Onboarding Flow
+
+> Part of the [Karat Growth Audit](../README.md) → `audits/onboarding.md`
 
 **Date:** February 2026
-**Auditor:** Product Review
-**Status:** Actionable — Phased PRs mapped
-**Core proposal: 5-minute onboarding → 1-minute account creation + deferred application**
+**Status:** Actionable — PRs mapped
+**Findings:** 13 friction points identified
+**Summary:** The onboarding flow bundles account creation and KYB application into one session — 10 screens, 28 fields, 37 actions. A critical Phyllo redirect bug drops users on getphyllo.com. No email re-engagement for abandoned sessions. Core proposal: decouple into 2-minute account creation + deferred application. Estimated +40–55% completion lift. Overall onboarding health: **2/5**.
 
 ---
 
 ## 1. Executive Summary
 
-The proposal in this document is a single-sentence reframe: **turn a 5-minute onboarding into a 1-minute account creation, with a deferred application that works for Karat instead of against it.**
+**Core proposal: decouple a 5-minute onboarding into a 1-minute account creation + a deferred application.**
 
-Karat currently bundles two fundamentally different jobs into one single flow:
+Karat currently bundles two different jobs into one flow:
 
 1. **Account creation** — establish identity, claim an account, get a login
 2. **KYB application** — provide the legal and financial data required to open a banking account
 
-Users experience this with:
+The current flow has no back buttons, competing loading states, third-party branding mid-flow, and a redirect bug that sends users to a third-party site. Users who abandon have no account to return to and receive no re-engagement email.
 
-- no back buttons
-- competing loading state
-- third-party branding mid-flow
-- redirect bug that drops them on a competitor's site.
-
-If they abandon, they have no account to return to. There is no re-engagement email. There is no psychological ownership before the hard work begins.
-
-Beyond the UX problems, the email dimension is absent. A user who creates an account via Google OAuth receives a verification email and nothing else. If they abandon mid-onboarding, they get no nudge, no value prop reminder, and no path back. The funnel has a hole and no mechanism to recover the people falling through it.
+A user who creates an account via Google OAuth receives a verification email and nothing else. If they abandon mid-onboarding, there is no follow-up. The funnel has no recovery mechanism for drop-offs.
 
 **The proposal has three components:**
 
@@ -115,13 +110,13 @@ The onboarding flow has almost no email dimension. This means every user who aba
 | Application approved                    | Unknown                 | Approval email + "your account is active" + first steps   |
 | Application rejected / more info needed | Unknown                 | Clear next steps, not a silent dead end                   |
 
-**The consequence of the current state:** A user who signs up via Google OAuth, fills out Step 1, and then closes the tab is gone forever. Karat has their email, their name, and their business type — but zero automated follow-up. This is recoverable funnel that currently reads as permanent churn.
+**The consequence:** A user who signs up via Google OAuth, fills out Step 1, and then closes the tab receives no follow-up. Karat has their email, name, and business type — but no automated re-engagement. This is a recoverable funnel with no recovery mechanism.
 
 ---
 
 ## 3. Friction Point Analysis
 
-### FP-1: No Back Navigation
+### ONB-1: No Back Navigation
 
 **Severity:** High
 **Location:** All 4 main steps
@@ -131,7 +126,7 @@ The onboarding flow has almost no email dimension. This means every user who aba
 
 ---
 
-### FP-2: No Sense of Account Creation — Goes Straight to Setup
+### ONB-2: No Sense of Account Creation — Goes Straight to Setup
 
 **Severity:** High
 **Location:** Post-signup → Step 1
@@ -141,7 +136,7 @@ The onboarding flow has almost no email dimension. This means every user who aba
 
 ---
 
-### FP-3: Step 1 Field Density
+### ONB-3: Step 1 Field Density
 
 **Severity:** Medium
 **Location:** Business Information screen
@@ -151,7 +146,7 @@ The onboarding flow has almost no email dimension. This means every user who aba
 
 ---
 
-### FP-4: MagicSocial Intermediate Screen (Unnecessary Click)
+### ONB-4: MagicSocial Intermediate Screen (Unnecessary Click)
 
 **Severity:** Medium
 **Location:** Between platform selection and connect modal
@@ -161,7 +156,7 @@ The onboarding flow has almost no email dimension. This means every user who aba
 
 ---
 
-### FP-5: "Connect your account" Second Modal (Unnecessary Click)
+### ONB-5: "Connect your account" Second Modal (Unnecessary Click)
 
 **Severity:** Medium
 **Location:** Between MagicSocial modal and Twitter OAuth
@@ -171,7 +166,7 @@ The onboarding flow has almost no email dimension. This means every user who aba
 
 ---
 
-### FP-6 (CRITICAL): Phyllo Redirect Bug — User Lands on getphyllo.com
+### ONB-6 (CRITICAL): Phyllo Redirect Bug — User Lands on getphyllo.com
 
 **Severity:** Critical
 **Location:** After Twitter/X OAuth authorization
@@ -182,7 +177,7 @@ The onboarding flow has almost no email dimension. This means every user who aba
 3. Manually switch back to the Karat tab
 4. Continue their onboarding
 
-Many users don't do steps 2–4. They read Phyllo's landing page, see "Sign Up for Free" and think they need a Phyllo account. Or they simply close the tab and abandon onboarding entirely.
+Many users won't complete steps 2–4. They may read Phyllo's landing page and think they need a Phyllo account, or simply close the tab.
 
 **Root Cause:** Karat is using Phyllo's **redirect flow** instead of the **popup flow**. In redirect flow, after OAuth completes, the user is redirected to a `redirect_url`. If this URL is misconfigured or not set in Phyllo's developer dashboard, Phyllo defaults to its own homepage.
 
@@ -192,11 +187,11 @@ Many users don't do steps 2–4. They read Phyllo's landing page, see "Sign Up f
 
 ---
 
-### FP-7: Phyllo Brand Exposed on Twitter OAuth Page
+### ONB-7: Phyllo Brand Exposed on Twitter OAuth Page
 
 **Severity:** Medium-High
 **Location:** Twitter/X OAuth authorization page
-**Problem:** The Twitter OAuth page reads "Authorize **Phyllo** to access your account" — not Karat. This breaks trust. The user has been interacting with Karat, now Twitter is asking them to authorize a company they've never heard of. This creates anxiety ("Is this a scam?") and increases abandonment.
+**Problem:** The Twitter OAuth page reads "Authorize **Phyllo** to access your account" — not Karat. The user has been interacting with Karat, and now Twitter is asking them to authorize an unfamiliar name. This creates uncertainty and increases abandonment at the OAuth step.
 **Fix options (see Section 4):** Two-tier approach:
 
 1. Short-term: Add clear language on the Karat side before OAuth ("You'll see 'Phyllo' on Twitter's page — that's our secure data partner, similar to how Plaid works for bank connections")
@@ -205,7 +200,7 @@ Many users don't do steps 2–4. They read Phyllo's landing page, see "Sign Up f
 
 ---
 
-### FP-8: Confirm Screen UI Inconsistency
+### ONB-8: Confirm Screen UI Inconsistency
 
 **Severity:** Medium
 **Location:** "Confirm and review" screen
@@ -215,11 +210,11 @@ Many users don't do steps 2–4. They read Phyllo's landing page, see "Sign Up f
 
 ---
 
-### FP-9: Wait Screen + Arcade Game
+### ONB-9: Wait Screen + Arcade Game
 
 **Severity:** High
 **Location:** Post-confirmation
-**Problem:** The game mechanic is clever as a brand moment but is catastrophically timed. The user just completed a significant task (full business application). Their brain is in "what happens next?" mode. The game pulls 100% of attention away. After 5–15 seconds of playing, the user loses context of where they are. When the game ends or they close it, they find themselves on an unfamiliar dashboard with a "Missing information" banner — entirely disorienting.
+**Problem:** The game mechanic is a creative brand moment but poorly timed. The user just completed a significant task (full business application) and is in "what happens next?" mode. The game shifts attention away from the product. After the game ends, the user lands on an unfamiliar dashboard with a "Missing information" banner — losing the context they just built.
 **Fix:** Remove the game entirely. Replace the post-confirmation screen with:
 
 - A clear "Application submitted — here's what to do while you wait" screen
@@ -230,17 +225,17 @@ Many users don't do steps 2–4. They read Phyllo's landing page, see "Sign Up f
 
 ---
 
-### FP-10: "Application status: Missing information" as First Dashboard Message
+### ONB-10: "Application status: Missing information" as First Dashboard Message
 
 **Severity:** Medium
 **Location:** Post-onboarding dashboard
-**Problem:** The first thing a user sees in their new banking dashboard is an orange warning banner saying their application is missing information. This is the opposite of the trust-building moment they need. Regardless of whether the banner is accurate, it triggers anxiety before the user has even seen the product.
+**Problem:** The first thing a user sees in their new banking dashboard is an orange warning banner saying their application is missing information. Regardless of whether the banner is accurate, it creates concern before the user has had a chance to explore the product.
 **Fix:** If the information is genuinely missing, prompt for it inline in the onboarding flow before reaching the dashboard. If it's a system lag, show a neutral "We're reviewing your application" state instead of a missing-information warning.
 **Estimated impact:** Reduces initial churn (users who leave immediately after seeing this).
 
 ---
 
-### FP-11: Multiple Competing Loading States Between Steps
+### ONB-11: Multiple Competing Loading States Between Steps
 
 **Severity:** Medium-High
 **Location:** Every onboarding step transition + throughout the app
@@ -261,7 +256,7 @@ This is not isolated to onboarding. The same full-page loader appears on dashboa
 
 ---
 
-### FP-12: No Email Re-engagement — Abandoned Onboarding Is Permanently Lost
+### ONB-12: No Email Re-engagement — Abandoned Onboarding Is Permanently Lost
 
 **Severity:** High
 **Location:** Post-signup, post-abandonment
@@ -273,28 +268,28 @@ This is not isolated to onboarding. The same full-page loader appears on dashboa
 - "Pick up where you left off" email when they log back in without finishing
 - Application confirmation email after submission
 
-The result: every abandoned session is treated as permanent churn. Karat has the user's email, their name, and often their company name from step 1 — and does nothing with it. In a typical B2B SaaS funnel, email re-engagement recovers 15–25% of users who abandon during onboarding. Karat is leaving all of that on the table.
+The result: every abandoned session is treated as permanent churn. Karat has the user's email, their name, and often their company name from step 1 — but no automated follow-up exists. In a typical B2B SaaS funnel, email re-engagement recovers 15–25% of users who abandon during onboarding.
 
 **Additional observed bug:** A user who creates an account and then logs out and tries to log in again receives no re-engagement or reminder email. The flow silently resumes (or doesn't), with no guidance.
 
 **Fix:** Implement a structured email flow triggered at every meaningful onboarding state (see the email touchpoints table in Section 2.3 for the current gaps). The minimum viable version is three emails: welcome after verification, Day 1 re-engagement if application not started, and mid-flow abandon recovery.
 
-**Estimated impact:** +15–25% recovery of abandoned-but-created accounts. Combined with the account creation decoupling (FP-13), this turns the current dead-end funnel into a continuous re-engagement loop.
+**Estimated impact:** +15–25% recovery of abandoned-but-created accounts. Combined with the account creation decoupling (ONB-13), this converts a one-way funnel into a re-engagement loop.
 
 ---
 
-### FP-13: Account Creation and Application Are Monolithically Coupled
+### ONB-13: Account Creation and Application Are Coupled
 
 **Severity:** High
 **Location:** Entire onboarding architecture
-**Problem:** Karat treats account creation and the KYB application as one indivisible flow. A user who creates an account but doesn't finish the application has no real account — they can't log in and explore, they have no sense of ownership, and they have no reason to come back other than the vague memory that they started something.
+**Problem:** Karat treats account creation and the KYB application as one flow. A user who creates an account but doesn't finish the application has no real account — they can't log in and explore, and have no reason to come back.
 
-This coupling creates several downstream failures:
+This creates several downstream effects:
 
-1. **No psychological hook.** The user never experiences a completion moment before the hardest steps. They're filling out EIN and SSN fields before they've seen the product at all.
-2. **No partial value delivery.** There's no way to let users explore the product in demo mode while their application is pending. The product is hidden behind the KYB wall.
-3. **Re-engagement is meaningless.** Even if Karat sends a re-engagement email, clicking it drops the user back into a half-completed KYB form with no context of what they've built or why they should finish.
-4. **Google OAuth users have no password.** A user who signed up via Google OAuth and abandoned is especially likely to lose track — they have no password to remember, no "login with credentials" muscle memory, and nothing anchoring them to the product.
+1. **No completion moment.** The user never experiences a milestone before the hardest steps. They're providing EIN and SSN before they've seen the product.
+2. **No partial value delivery.** There's no way to let users explore the product in demo mode while their application is pending.
+3. **Re-engagement has no anchor.** Even if Karat sends a re-engagement email, it drops the user back into a half-completed KYB form with no context.
+4. **Google OAuth users have no password.** Users who signed up via Google OAuth and abandoned have no credentials to remember and nothing anchoring them to the product.
 
 **Fix:** Decouple account creation from the KYB application. Account creation (4 screens: name, company, email, phone → website → employee count + vertical → password) completes immediately and deposits the user in a demo-mode dashboard. The KYB application is a separate journey initiated from the dashboard, with all Phase 1 fields pre-filled. The user has already committed — they have an account, they can see the product, and now they're motivated to unlock the real thing.
 
@@ -692,24 +687,39 @@ All estimates based on industry benchmarks for B2B fintech onboarding (Mercury, 
 
 | Change                                                                | Friction Point | Estimated Completion Lift             |
 | --------------------------------------------------------------------- | -------------- | ------------------------------------- |
-| Add back buttons to all steps                                         | FP-1           | +15–20% per step                      |
-| Two-phase model (account creation moment)                             | FP-2           | +10–15% overall                       |
-| Field density reduction (Step 1 split)                                | FP-3           | +8–12% at Step 1                      |
-| Remove MagicSocial intermediate modal                                 | FP-4           | +5–8% at Step 4                       |
-| Remove "Connect your account" modal                                   | FP-5           | +4–7% at Step 4                       |
-| Fix Phyllo redirect bug (popup flow)                                  | FP-6           | +15–25% at Step 4                     |
-| Phyllo branding explainer                                             | FP-7           | +5–10% at OAuth step                  |
-| Design consistency on confirm screen                                  | FP-8           | +3–5% at confirm                      |
-| Remove game, add activation content                                   | FP-9           | +20–30% first-session activation      |
-| Fix first dashboard message                                           | FP-10          | -15–20% immediate post-onboard churn  |
-| Unified loading component — persistent chrome during step transitions | FP-11          | -20–30% perceived onboarding duration |
-| Connected account pre-fill (Spotify, YouTube, Stripe, TikTok)        | FP-13 / §6.4   | +15–25% Phase 2 completion; -40–60% time to submit |
+| Add back buttons to all steps                                         | ONB-1           | +15–20% per step                      |
+| Two-phase model (account creation moment)                             | ONB-2           | +10–15% overall                       |
+| Field density reduction (Step 1 split)                                | ONB-3           | +8–12% at Step 1                      |
+| Remove MagicSocial intermediate modal                                 | ONB-4           | +5–8% at Step 4                       |
+| Remove "Connect your account" modal                                   | ONB-5           | +4–7% at Step 4                       |
+| Fix Phyllo redirect bug (popup flow)                                  | ONB-6           | +15–25% at Step 4                     |
+| Phyllo branding explainer                                             | ONB-7           | +5–10% at OAuth step                  |
+| Design consistency on confirm screen                                  | ONB-8           | +3–5% at confirm                      |
+| Remove game, add activation content                                   | ONB-9           | +20–30% first-session activation      |
+| Fix first dashboard message                                           | ONB-10          | -15–20% immediate post-onboard churn  |
+| Unified loading component — persistent chrome during step transitions | ONB-11          | -20–30% perceived onboarding duration |
+| Connected account pre-fill (Spotify, YouTube, Stripe, TikTok)        | ONB-13 / §6.4   | +15–25% Phase 2 completion; -40–60% time to submit |
 
 **Conservative combined estimate:** If each improvement captures the low end of its range independently, the cumulative effect on end-to-end onboarding completion is **+22–38% absolute**, with first-session activation improving by **+20–30%**.
 
-The highest-value single fix: **the Phyllo popup flow switch (FP-6)** — it's a bug fix with no UX tradeoffs that recovers a significant drop-off cliff.
+The highest-value single fix: **the Phyllo popup flow switch (ONB-6)** — it's a bug fix with no UX tradeoffs that recovers a significant drop-off cliff.
 
 The highest-value strategic unlock: **connected account pre-fill (§6.4)** — only possible after Phase 1 / Phase 2 decoupling, but converts the platform verification step from a compliance gate into a user-facing shortcut that fills the application for them.
+
+---
+
+## Summary Scorecard
+
+| Dimension                          | Score | Key Driver                                                              |
+| ---------------------------------- | ----- | ----------------------------------------------------------------------- |
+| Flow clarity (step count vs. real) | 1/5   | User sees "4 steps" but experiences 10 screens and 37 actions           |
+| Navigation & error recovery        | 1/5   | No back buttons on any step                                             |
+| Third-party integration            | 1/5   | Phyllo redirect bug is a conversion cliff; branding creates uncertainty |
+| Email & re-engagement              | 1/5   | No automated follow-up for any abandonment scenario                     |
+| Post-submission experience          | 2/5   | Game disrupts context; first dashboard message is a warning             |
+| Design consistency                  | 2/5   | Three visual languages in one flow                                      |
+| Loading states                      | 2/5   | Two competing loading implementations; no shared component              |
+| **Overall onboarding health**       | **2/5** | **Functional but high-friction; structural changes needed**           |
 
 ---
 
@@ -721,10 +731,10 @@ The highest-value strategic unlock: **connected account pre-fill (§6.4)** — o
 
 | PR   | Change                                                                                 | Impact     |
 | ---- | -------------------------------------------------------------------------------------- | ---------- |
-| PR-1 | Add back buttons to all onboarding steps                                               | FP-1       |
-| PR-2 | Switch Phyllo to popup flow + pass `workPlatformId` from platform selection            | FP-6, FP-5 |
-| PR-3 | Remove MagicSocial intermediate consent modal (merge disclosure to platform selection) | FP-4       |
-| PR-4 | Fix dashboard first-load message ("Under review" instead of "Missing information")     | FP-10      |
+| PR-1 | Add back buttons to all onboarding steps                                               | ONB-1       |
+| PR-2 | Switch Phyllo to popup flow + pass `workPlatformId` from platform selection            | ONB-6, ONB-5 |
+| PR-3 | Remove MagicSocial intermediate consent modal (merge disclosure to platform selection) | ONB-4       |
+| PR-4 | Fix dashboard first-load message ("Under review" instead of "Missing information")     | ONB-10      |
 
 ---
 
@@ -734,10 +744,10 @@ The highest-value strategic unlock: **connected account pre-fill (§6.4)** — o
 
 | PR   | Change                                                                                                   | Impact |
 | ---- | -------------------------------------------------------------------------------------------------------- | ------ |
-| PR-5 | Add Plaid-style pre-OAuth explainer for Phyllo branding on Twitter page                                  | FP-7   |
-| PR-6 | Split Step 1 — move EIN, dates, headcount to second sub-step with "Skip for now" on EIN                  | FP-3   |
-| PR-7 | Remove wait game; replace with submission confirmation screen + quickstart checklist + video placeholder | FP-9   |
-| PR-8 | Design consistency pass: align confirm screen to main onboarding component library                       | FP-8   |
+| PR-5 | Add Plaid-style pre-OAuth explainer for Phyllo branding on Twitter page                                  | ONB-7   |
+| PR-6 | Split Step 1 — move EIN, dates, headcount to second sub-step with "Skip for now" on EIN                  | ONB-3   |
+| PR-7 | Remove wait game; replace with submission confirmation screen + quickstart checklist + video placeholder | ONB-9   |
+| PR-8 | Design consistency pass: align confirm screen to main onboarding component library                       | ONB-8   |
 
 ---
 
@@ -747,10 +757,10 @@ The highest-value strategic unlock: **connected account pre-fill (§6.4)** — o
 
 | PR    | Change                                                                                                 | Impact       |
 | ----- | ------------------------------------------------------------------------------------------------------ | ------------ |
-| PR-9  | Implement Phase 1: account creation flow (name, email, password, company name) with email verification | FP-2         |
-| PR-10 | Implement Phase 2: authenticated business verification shell with persistent sidebar progress          | FP-2         |
+| PR-9  | Implement Phase 1: account creation flow (name, email, password, company name) with email verification | ONB-2         |
+| PR-10 | Implement Phase 2: authenticated business verification shell with persistent sidebar progress          | ONB-2         |
 | PR-11 | Light → dark UI transition between Phase 1 and Phase 2                                                 | Trust, brand |
-| PR-12 | Progressive save on all Phase 2 steps ("Save and continue")                                            | FP-1, FP-3   |
+| PR-12 | Progressive save on all Phase 2 steps ("Save and continue")                                            | ONB-1, ONB-3   |
 
 ---
 
@@ -760,10 +770,10 @@ The highest-value strategic unlock: **connected account pre-fill (§6.4)** — o
 
 | PR    | Change                                                                              | Impact |
 | ----- | ----------------------------------------------------------------------------------- | ------ |
-| PR-13 | Register Karat's own Twitter developer app; implement direct OAuth 2.0 PKCE         | FP-7   |
-| PR-14 | Same for Instagram Graph API                                                        | FP-7   |
-| PR-15 | Same for TikTok API                                                                 | FP-7   |
-| PR-16 | Evaluate Phyllo enterprise/InsightIQ plan for remaining platforms (YouTube, Twitch) | FP-7   |
+| PR-13 | Register Karat's own Twitter developer app; implement direct OAuth 2.0 PKCE         | ONB-7   |
+| PR-14 | Same for Instagram Graph API                                                        | ONB-7   |
+| PR-15 | Same for TikTok API                                                                 | ONB-7   |
+| PR-16 | Evaluate Phyllo enterprise/InsightIQ plan for remaining platforms (YouTube, Twitch) | ONB-7   |
 
 ---
 
@@ -773,10 +783,10 @@ The highest-value strategic unlock: **connected account pre-fill (§6.4)** — o
 
 | PR    | Change                                                                                                                    | Impact |
 | ----- | ------------------------------------------------------------------------------------------------------------------------- | ------ |
-| PR-17 | Build shared `<LoadingState variant="inline\|section\|page" />` component                                                 | FP-11  |
-| PR-18 | Audit and replace all existing loading states across app with the new component                                           | FP-11  |
-| PR-19 | Wrap all `/banking-application/*` onboarding routes in a persistent layout so chrome never unmounts between steps         | FP-11  |
-| PR-20 | Replace full-page takeover loader on in-app navigation with `section` variant; restrict `page` variant to cold start only | FP-11  |
+| PR-17 | Build shared `<LoadingState variant="inline\|section\|page" />` component                                                 | ONB-11  |
+| PR-18 | Audit and replace all existing loading states across app with the new component                                           | ONB-11  |
+| PR-19 | Wrap all `/banking-application/*` onboarding routes in a persistent layout so chrome never unmounts between steps         | ONB-11  |
+| PR-20 | Replace full-page takeover loader on in-app navigation with `section` variant; restrict `page` variant to cold start only | ONB-11  |
 
 ---
 
