@@ -1,6 +1,6 @@
 # Karat Financial — Growth Analysis
 
-> **Reference board:** [Karat Growth Audit — Visual Map](https://app.excalidraw.com/s/9QvXbs54mAb/7sPMMJ164Pe)
+> **Reference board:** [Karat Growth Audit — Visual Map](https://link.excalidraw.com/l/9QvXbs54mAb/7sPMMJ164Pe)
 
 ## Goal
 
@@ -117,7 +117,7 @@ We'll note these as gaps and flag recommendations where relevant, but won't pret
 
 ## Tooling
 
-This analysis was powered by **Claude Code**, **Codex**, and **Kimi 2.5**, along with Claude Code's Excalidraw MCP skill for generating the diagrams embedded in the documentation and on the [Excalidraw reference board](https://app.excalidraw.com/s/9QvXbs54mAb/7sPMMJ164Pe).
+This analysis was powered by **Claude Code**, **Codex**, and **Kimi 2.5**, along with Claude Code's Excalidraw MCP skill for generating the diagrams embedded in the documentation and on the [Excalidraw reference board](https://link.excalidraw.com/l/9QvXbs54mAb/7sPMMJ164Pe).
 
 Several audit documents include Mermaid diagrams (flow charts, architecture diagrams). To view them rendered:
 
