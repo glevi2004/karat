@@ -44,6 +44,8 @@ It is not architecturally built for production or scale — it's a UI exploratio
 - **Google Places autocomplete** for address steps
 - **Dashboard** with banking overview, AI bookkeeping, and application status
 
+**Live demo:** [karat-kappa.vercel.app](https://karat-kappa.vercel.app/)
+
 See the [my-app README](my-app/README.md) for the full feature list, architecture diagram, and mapping to audit findings.
 
 ### What's next (to be implemented)
