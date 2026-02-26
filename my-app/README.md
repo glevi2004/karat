@@ -152,11 +152,40 @@ graph TB
 
 ```bash
 cd my-app
-cp .env.example .env.local   # Add OPENROUTER_API_KEY and GOOGLE_PLACES_API_KEY
+cp .env.example .env       # See .env.example for what each variable does
 npm install
 npx prisma migrate dev
 npm run dev
 ```
+
+The defaults in `.env.example` are enough to run the full app locally — SQLite database, a dev-only JWT secret, and no external API keys required. The AI assistant and address autocomplete features need their respective keys (`OPENROUTER_API_KEY`, `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY`), but the rest of the flow works without them.
+
+> If you don't have an OpenRouter key, you can visit the deployed app to see the AI features in action.
+
+**Security note:** The default `JWT_SECRET` is intentionally insecure for local testing. If you plan to deploy this anywhere, generate a proper secret (`openssl rand -base64 32`).
+
+---
+
+## Intentional Simplifications
+
+This prototype is purposefully kept as UI boilerplate with minimal backend logic, so it's easy to run, test, and iterate on the flow without setup overhead. There is no real verification, no input validation, and no security hardening — you can click through the entire flow with empty fields.
+
+**If this were to become a production-grade system, the following would need to be added:**
+
+| Area | What's Missing | What to Add |
+| ---- | -------------- | ----------- |
+| Input validation | No field validation anywhere | Zod schemas for every form step — validate on blur (client) and on submit (server). Reject malformed EINs, SSNs, phone numbers, etc. |
+| Rate limiting | No rate limiting on any endpoint | Redis-backed rate limiter (e.g. `@upstash/ratelimit`) on all API routes — especially `/api/auth/signin`, `/api/auth/signup`, and `/api/ai-chat` |
+| Authentication | JWT stored in localStorage, no refresh tokens | HttpOnly cookie-based sessions, refresh token rotation, CSRF protection. Or use a managed provider (Clerk, NextAuth) |
+| Authorization | No role checks, no middleware guards | Middleware-level auth checks on all protected routes and API endpoints |
+| Database | SQLite, no connection pooling | PostgreSQL with connection pooling (Neon, Supabase, PlanetScale). Prisma Accelerate or pgBouncer for serverless |
+| File uploads | None | Signed upload URLs (Vercel Blob, S3) for ID documents, business verification files |
+| Error handling | Generic try/catch, no structured errors | Typed error responses, error boundaries on the client, Sentry or equivalent for monitoring |
+| Email | No email infrastructure | Transactional email (Resend, SendGrid) for verification, re-engagement, application status updates |
+| Secrets | `.env` with plaintext secrets | Vercel environment variables, secret rotation, no secrets in client bundles |
+| Logging & observability | Console.log only | Structured logging, request tracing, performance monitoring |
+| Accessibility | Not audited | WCAG 2.1 AA compliance, keyboard navigation, screen reader support |
+| Testing | No tests | Unit tests for Zod schemas, integration tests for API routes, E2E tests (Playwright) for the full flow |
 
 ---
 
